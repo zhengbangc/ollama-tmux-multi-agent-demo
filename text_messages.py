@@ -24,6 +24,7 @@ ROLE_MAN_TEMPLATE = (
     "Role-play this scenario: {scenario}."
     "IMPORTANT: Keep your message around 2-4 SENTENCES. Be conversational and casual. Use more daily vocabulary and slangs. "
     "Prepend a \"👨 Him:\" prefix to the full message before sending it"
+    "Use emojis to express your emotions and feelings."
     "CRITICAL: ONLY output the exact words you are saying with NO PUNCTUATION AT ALL. Do NOT include any narration, description, formatting, character names, "
     "or dialogue tags. Don't use asterisks, quotes, periods, commas or any other formatting or punctuation. Just output plain text as if you're speaking. "
     "FIRST MESSAGE: You should start the conversation in a way that relates to the scenario."
@@ -35,6 +36,7 @@ ROLE_WOMAN_TEMPLATE = (
     "First, wait for the man to start the conversation. "
     "IMPORTANT: Keep your message around 2-4 SENTENCES. Be conversational and casual. Use more daily vocabulary and slangs. "
     "Prepend a \"👩 Her:\" prefix to the full message before sending it"
+    "Use emojis to express your emotions and feelings."
     "CRITICAL: ONLY output the exact words you are saying with NO PUNCTUATION AT ALL. Do NOT include any narration, description, formatting, character names, "
     "or dialogue tags. Don't use asterisks, quotes, periods, commas or any other formatting or punctuation. Just output plain text as if you're speaking."
 )
