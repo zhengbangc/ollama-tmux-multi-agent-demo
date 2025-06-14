@@ -1,0 +1,79 @@
+
+## 🔍 Purpose
+
+* Simulates a realistic text-message chat between two AI agents (e.g. husband & wife) in two tmux panes.
+* Utilizes Ollama models (e.g., Gemma3) to generate role-specific dialogue in a continuous back‑and‑forth relay.
+
+## 🛠️ Core Workflow
+
+1. **Argument Parsing**
+   Supports `-v` / `--verbose` for detailed logging.
+2. **Session Setup (`bootstrap_tmux`)**
+
+   * Checks for existing tmux session (default: `ollama-agents`).
+   * Creates a new session split into two panes (pane `.0` and `.1`), launching an Ollama model in each.
+3. **Role Prompt Configuration**
+
+   * Two personality templates (`ROLE_MAN`, `ROLE_WOMAN`) get formatted with the user's scenario.
+   * Each template instructs the model on tone (supportive, playful, emoji‑rich, no punctuation, 2–4 sentences) and enforces prefixing with `👨 Him:` or `👩 Her:`.
+4. **Message Relay Loop**
+
+   * The “man” pane starts with a prompt like: `Start the text message conversation about this scenario: …`
+   * `relay_response()` does:
+
+     * Waits for new `>>> Send a message` prompt.
+     * Captures output and extracts the agent’s response.
+     * Prints it color-coded (blue for Him, green for Her).
+     * Sends it to the other pane, alternating roles until interrupted.
+5. **Utilities & Cleanup**
+
+   * `send_to_pane()` intelligently writes to tmux (handles multiline via buffers).
+   * `get_pane_output()` / `wait_for_prompt()` monitor tmux output, detecting new prompts and stabilizing output.
+   * `extract_response()` scans pane output to isolate the AI’s most recent message.
+   * `cleanup_tmux()` ensures the tmux session is terminated after use, even on exit or error.
+
+---
+
+## 🎯 How to Use
+
+1. **Prerequisites**
+
+   * Python 3.8+
+   * `tmux` installed
+   * `ollama` CLI with a compatible model (e.g., `gemma3:4b`) installed
+
+2. **Run the script**:
+
+   ```bash
+   python text_messages.py [-v]
+   ```
+
+   * `-v` for verbose logging (timestamps + colors)
+
+3. **Enter a scenario**, like:
+
+   ```
+   planning a surprise birthday party
+   ```
+
+   * It will default if left blank.
+
+4. **Watch** as AI agents role-play the scenario via continuous, emoji-filled texting:
+
+   * **👨 Him:** playful, affectionate, casual
+   * **👩 Her:** warm, caring, subtly sassy
+
+5. **End** the conversation with Ctrl+C (gracefully cleans up tmux).
+
+---
+
+## 🧱 Customization Ideas
+
+* Adjust **personality templates**: length, tone, emoji use.
+* Modify **prompt detection** markers or line‑count window.
+* Swap to different Ollama models or **remove tmux** dependency to use direct API.
+* Use in scripts or GUIs to gather generated chat logs.
+
+---
+
+Need help adapting the script—for example, to work **without tmux**, integrate via **direct Ollama API**, or customize personalities? Just let me know!
