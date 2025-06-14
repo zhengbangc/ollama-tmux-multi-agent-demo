@@ -1,79 +1,140 @@
-
-## 🔍 Purpose
-
-* Simulates a realistic text-message chat between two AI agents (e.g. husband & wife) in two tmux panes.
-* Utilizes Ollama models (e.g., Gemma3) to generate role-specific dialogue in a continuous back‑and‑forth relay.
-
-## 🛠️ Core Workflow
-
-1. **Argument Parsing**
-   Supports `-v` / `--verbose` for detailed logging.
-2. **Session Setup (`bootstrap_tmux`)**
-
-   * Checks for existing tmux session (default: `ollama-agents`).
-   * Creates a new session split into two panes (pane `.0` and `.1`), launching an Ollama model in each.
-3. **Role Prompt Configuration**
-
-   * Two personality templates (`ROLE_MAN`, `ROLE_WOMAN`) get formatted with the user's scenario.
-   * Each template instructs the model on tone (supportive, playful, emoji‑rich, no punctuation, 2–4 sentences) and enforces prefixing with `👨 Him:` or `👩 Her:`.
-4. **Message Relay Loop**
-
-   * The “man” pane starts with a prompt like: `Start the text message conversation about this scenario: …`
-   * `relay_response()` does:
-
-     * Waits for new `>>> Send a message` prompt.
-     * Captures output and extracts the agent’s response.
-     * Prints it color-coded (blue for Him, green for Her).
-     * Sends it to the other pane, alternating roles until interrupted.
-5. **Utilities & Cleanup**
-
-   * `send_to_pane()` intelligently writes to tmux (handles multiline via buffers).
-   * `get_pane_output()` / `wait_for_prompt()` monitor tmux output, detecting new prompts and stabilizing output.
-   * `extract_response()` scans pane output to isolate the AI’s most recent message.
-   * `cleanup_tmux()` ensures the tmux session is terminated after use, even on exit or error.
+Great — here's a **clean, professional `README.md`** tailored for your `text_messages.py` script from the [Ollama tmux multi-agent demo](https://github.com/zhengbangc/ollama-tmux-multi-agent-demo):
 
 ---
 
-## 🎯 How to Use
+````markdown
+# 📨 AI Text Message Simulator (Ollama + tmux)
 
-1. **Prerequisites**
+Simulate a dynamic, emoji-rich text message conversation between two AI agents using [Ollama](https://ollama.com/) and `tmux`.
 
-   * Python 3.8+
-   * `tmux` installed
-   * `ollama` CLI with a compatible model (e.g., `gemma3:4b`) installed
-
-2. **Run the script**:
-
-   ```bash
-   python text_messages.py [-v]
-   ```
-
-   * `-v` for verbose logging (timestamps + colors)
-
-3. **Enter a scenario**, like:
-
-   ```
-   planning a surprise birthday party
-   ```
-
-   * It will default if left blank.
-
-4. **Watch** as AI agents role-play the scenario via continuous, emoji-filled texting:
-
-   * **👨 Him:** playful, affectionate, casual
-   * **👩 Her:** warm, caring, subtly sassy
-
-5. **End** the conversation with Ctrl+C (gracefully cleans up tmux).
+This script launches two conversational agents (e.g., husband and wife) who roleplay a scenario of your choice. It runs each model in a separate tmux pane and relays their messages back and forth like a natural chat.
 
 ---
 
-## 🧱 Customization Ideas
+## 🚀 Features
 
-* Adjust **personality templates**: length, tone, emoji use.
-* Modify **prompt detection** markers or line‑count window.
-* Swap to different Ollama models or **remove tmux** dependency to use direct API.
-* Use in scripts or GUIs to gather generated chat logs.
+- 🤖 Two AI agents (e.g. "Him" and "Her") texting each other
+- 🎭 Role-specific personalities with customizable scenarios
+- 🧠 Powered by [Ollama](https://ollama.com/) LLMs (e.g., `gemma3:4b`)
+- 🖥️ Uses `tmux` for isolated model sessions
+- 📝 Rich logging and colored terminal output
+- ✂️ Automatic cleanup on exit
 
 ---
 
-Need help adapting the script—for example, to work **without tmux**, integrate via **direct Ollama API**, or customize personalities? Just let me know!
+## 🧰 Requirements
+
+- Python 3.8+
+- [`tmux`](https://github.com/tmux/tmux)
+- [`ollama`](https://ollama.com/) (with a local model like `gemma3:4b`)
+  ```bash
+  ollama run gemma3:4b
+````
+
+---
+
+## 📦 Installation
+
+Clone the repo:
+
+```bash
+git clone https://github.com/zhengbangc/ollama-tmux-multi-agent-demo.git
+cd ollama-tmux-multi-agent-demo
+```
+
+Install dependencies (if any — only standard libraries are used):
+
+```bash
+python3 text_messages.py
+```
+
+---
+
+## 💬 Usage
+
+### Basic
+
+```bash
+python3 text_messages.py
+```
+
+### Verbose Logging
+
+```bash
+python3 text_messages.py -v
+```
+
+You’ll be prompted:
+
+```
+Enter a scenario for them to role-play (e.g., 'planning a first date', 'discussing weekend plans'):
+```
+
+> If you skip the prompt, a default scenario will be used: `meeting for coffee after matching on a dating app`.
+
+---
+
+## 🧠 Personalities
+
+Each agent has a distinct role and tone:
+
+### 👨 Him:
+
+* Supportive, goofy, loving
+* 2–4 sentence replies, no punctuation
+* Emoji-heavy, informal tone
+
+### 👩 Her:
+
+* Warm, playful, a little sassy
+* Honest emotional expression
+* Also informal and emoji-rich
+
+Messages appear like:
+
+```
+👨 Him: ok babe i totally forgot the groceries again 😅 do we need eggs or are we doing takeout 😬
+```
+
+---
+
+## 🛑 Stop the Chat
+
+Use `Ctrl+C` to end the simulation — this triggers automatic cleanup of the tmux session.
+
+---
+
+## 🧹 Cleanup
+
+If something breaks or you manually need to reset:
+
+```bash
+tmux kill-session -t ollama-agents
+```
+
+---
+
+## 🔧 Customization Ideas
+
+* Change the `gemma3:4b` model to any other local Ollama model
+* Tweak the role templates for tone, structure, or behavior
+* Adapt the script to simulate other types of conversations (e.g., mentor–student, interviewer–candidate)
+
+---
+
+## 📄 License
+
+MIT
+
+---
+
+## 🙏 Acknowledgments
+
+Built by [Zhengbang Chen](https://github.com/zhengbangc) to explore multi-agent coordination, personality simulation, and LLM-to-LLM dialog.
+
+```
+
+---
+
+Let me know if you want a simplified version, a version tailored for publication (e.g. PyPI), or additions like a usage GIF, architecture diagram, or agent personality config system.
+```
